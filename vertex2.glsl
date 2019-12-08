@@ -1,10 +1,10 @@
 precision mediump float;
 
 attribute vec3 vPosition;
-attribute vec3 vColor;
+attribute vec2 vTexCoord; // Koordinat tekstur, dimensi vektor: 1 x 2 (u, v)
 attribute vec3 vNormal;
 
-varying vec3 fColor;
+varying vec2 fTexCoord;
 varying vec3 fPosition;
 varying vec3 fNormal;
 
@@ -17,8 +17,8 @@ uniform mat3 normalMatrix;  // Membantu transformasi vektor normal
 void main() {
   gl_Position = perspectiveMatrix * viewMatrix * modelMatrix * vec4(vPosition, 1.0);
 
-  // Transfer nilai warna ke fragment shader
-  fColor = vColor;
+  // Transfer koordinat tekstur ke fragment shader
+  fTexCoord = vTexCoord;
 
   // Transfer nilai vektor normal ke fragment shader
   fNormal = normalize(normalMatrix * vNormal);
