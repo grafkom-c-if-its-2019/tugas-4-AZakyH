@@ -265,7 +265,8 @@
     gl.uniform3fv(lightColorLoc, lightColor);
     gl.uniform3fv(lightPositionLoc, lightPosition);
     var ambientColorLoc = gl.getUniformLocation(program, 'ambientColor');
-    gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.5, 0.5, 0.5));
+    // gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.5, 0.5, 0.5));
+    gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.15, 0.40, 0.37));
 
     var nmLoc = gl.getUniformLocation(program, 'normalMatrix');
 
