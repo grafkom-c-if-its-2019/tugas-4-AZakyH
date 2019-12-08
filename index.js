@@ -46,16 +46,9 @@
       [ 0.0,  1.0,  0.0], // atas
       []
     ];
-    // var cubeTexCoords = [
-    //   // u, v
-    //   [ 0.0,  0.0],   // kiri bawah
-    //   [ 0.0,  1.0],   // kiri atas
-    //   [ 1.0,  1.0],   // kanan atas
-    //   [ 1.0,  0.0],   // kanan bawah
-    // ];
+    
     var cubeTexCoords = [
       // u, v
-      // gabung
       [ 0.0,  0.0],   // kiri bawah 1
       [ 0.0,  0.5],   // kiri atas 1
       [ 0.25,  0.5],   // kanan atas 1
@@ -80,32 +73,6 @@
       [ 0.25,  1.0],   // kiri bawah 5
       [ 0.5,  1.0],   // kanan bawah 5
       [ 0.5,  0.5],   // kanan atas 5
-
-      // panjang
-      // [ 0.0,  0.0],   // kiri bawah 1
-      // [ 0.0,  1.0],   // kiri atas 1
-      // [ 0.128,  1.0],   // kanan atas 1
-      // [ 0.128,  0.0],   // kanan bawah 1
-
-      // [ 0.128,  0.0],   // kiri bawah 2
-      // [ 0.128,  1.0],   // kiri atas 2
-      // [ 0.256,  1.0],   // kanan atas 2
-      // [ 0.256,  0.0],   // kanan bawah 2
-
-      // [ 0.256,  0.0],   // kiri bawah 3
-      // [ 0.256,  1.0],   // kiri atas 3
-      // [ 0.384,  1.0],   // kanan atas 3
-      // [ 0.384,  0.0],   // kanan bawah 3
-
-      // [ 0.384,  0.0],   // kiri bawah 4
-      // [ 0.384,  1.0],   // kiri atas 4
-      // [ 0.512,  1.0],   // kanan atas 4
-      // [ 0.512,  0.0],   // kanan bawah 4
-
-      // [ 0.512,  0.0],   // kiri bawah 5
-      // [ 0.512,  1.0],   // kiri atas 5
-      // [ 0.640,  1.0],   // kanan atas 5
-      // [ 0.640,  0.0],   // kanan bawah 5
     ];
 
     function quad(a, b, c, d, e) {
@@ -118,34 +85,25 @@
           cubeVertices.push(cubeColors[a][j]);
         }
         for (var j = 0; j < 3; j++) {
-          // cubeVertices.push(-1 * cubeNormals[a][j]);
           cubeVertices.push(cubeNormals[a][j]);
         }
         for (var j = 0; j < 2; j++) {
           switch (indices[i]) {
             case a:
-              // cubeVertices.push((a - 2) * 0.125);
               // cubeVertices.push(cubeTexCoords[0][j]);
               cubeVertices.push(cubeTexCoords[e][j]);
-              // cubeVertices.push(0.0);
               break;
             case b:
-              // cubeVertices.push((a - 2) * 0.125);
               // cubeVertices.push(cubeTexCoords[1][j]);
               cubeVertices.push(cubeTexCoords[e+1][j]);
-              // cubeVertices.push(1.0);
               break;
             case c:
-              // cubeVertices.push((a - 1) * 0.125);
               // cubeVertices.push(cubeTexCoords[2][j]);
               cubeVertices.push(cubeTexCoords[e+2][j]);
-              // cubeVertices.push(1.0);
               break;
             case d:
-              // cubeVertices.push((a - 1) * 0.125);
               // cubeVertices.push(cubeTexCoords[3][j]);
               cubeVertices.push(cubeTexCoords[e+3][j]);
-              // cubeVertices.push(0.0);
               break;
           
             default:
@@ -161,52 +119,71 @@
     quad(5, 4, 0, 1, 12);  // kiri
     quad(6, 5, 1, 2, 16);  // atas
 
-    // Link antara CPU Memory dengan GPU Memory
-    var cubeVBO = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVBO);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+    // Huruf
+    // Generic format
+    function genDraw(type, vertices) {
+      var n = initBuffers(vertices);
+      if (n < 0) {
+        console.log('Failed to set the positions of the vertices');
+        return;
+      }
+      gl.drawArrays(type, 0, n);
+    }
 
-    // Link untuk attribute
-    var vPosition = gl.getAttribLocation(program, 'vPosition');
-    // var vColor = gl.getAttribLocation(program, 'vColor');
-    var vNormal = gl.getAttribLocation(program, 'vNormal');
-    var vTexCoord = gl.getAttribLocation(program, 'vTexCoord');
-    gl.vertexAttribPointer(
-      vPosition,  // variabel yang memegang posisi attribute di shader
-      3,          // jumlah elemen per atribut
-      gl.FLOAT,   // tipe data atribut
-      false, 
-      11 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap vertex 
-      0                                   // offset dari posisi elemen di array
-    );
-    // gl.vertexAttribPointer(
-    //   vColor,
-    //   3,
-    //   gl.FLOAT,
-    //   false,
-    //   11 * Float32Array.BYTES_PER_ELEMENT,
-    //   3 * Float32Array.BYTES_PER_ELEMENT
-    // );
-    gl.vertexAttribPointer(
-      vNormal,
-      3,
-      gl.FLOAT,
-      false,
-      11 * Float32Array.BYTES_PER_ELEMENT,
-      6 * Float32Array.BYTES_PER_ELEMENT
-    );
-    gl.vertexAttribPointer(
-      vTexCoord,
-      2,
-      gl.FLOAT,
-      false,
-      11 * Float32Array.BYTES_PER_ELEMENT,
-      9 * Float32Array.BYTES_PER_ELEMENT
-    );
-    gl.enableVertexAttribArray(vPosition);
-    // gl.enableVertexAttribArray(vColor);
-    gl.enableVertexAttribArray(vNormal);
-    gl.enableVertexAttribArray(vTexCoord);
+    function boxDraw(type, vertices, x) {
+      // var n = initBuffers(vertices);
+      // if (n < 0) {
+      //   console.log('Failed to set the positions of the vertices');
+      //   return;
+      // }
+      gl.drawArrays(type, 0, x);
+    }
+
+    function initBuffers(vertices) {
+      var n = vertices.length / 3;
+
+      var vertexBuffer = gl.createBuffer();
+      if (!vertexBuffer) {
+        console.log('Failed to create the buffer object');
+        return -1;
+      }
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+      var vPosition = gl.getAttribLocation(program, 'vPosition');
+      if (vPosition < 0) {
+        console.log('Failed to get the storage location of vPosition');
+        return -1;
+      }
+
+      gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(vPosition);
+      return n;
+    }
+
+    var triangleVertices1 = new Float32Array([
+      0.2, -0.5, 0.0,  0.2, +0.5, 0.0,  0.3, +0.5, 0.0,  0.3, -0.5, 0.0
+    ]);
+    var triangleVertices2 = new Float32Array([
+      0.5, -0.5, 0.0,  0.5, +0.5, 0.0,  0.6, +0.5, 0.0,  0.6, -0.5, 0.0
+    ]);
+    var triangleVertices3 = new Float32Array([
+      0.3, -0.1, 0.0,  0.3, +0.1, 0.0,  0.5, +0.1, 0.0,  0.5, -0.1, 0.0
+    ]);
+
+    var mmLoc = gl.getUniformLocation(program, 'modelMatrix');
+    var mm = glMatrix.mat4.create();
+    var vecScale = [ 1.0, 1.0, 1.0 ];
+    var vecScaleH = [ 0.3, 0.3, 0.3 ];
+    var trans = {
+      x: 0.0, y: 0.0, z:0.0
+    }
+    var xAdders = 0.04;
+    var yAdders = 0.03;
+    var zAdders = 0.02;
+    var thetahuruf = 0.0;
+    // End of Huruf
 
     // Definisi transformasi pada model
     var mmLoc = gl.getUniformLocation(program, 'modelMatrix');
@@ -311,8 +288,83 @@
       var nm = glMatrix.mat3.normalFromMat4(glMatrix.mat3.create(), mm);
       gl.uniformMatrix3fv(nmLoc, false, nm);
   
+      // /////////// Link antara CPU Memory dengan GPU Memory
+      var cubeVBO = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, cubeVBO);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+
+      // Link untuk attribute
+      var vPosition = gl.getAttribLocation(program, 'vPosition');
+      // var vColor = gl.getAttribLocation(program, 'vColor');
+      var vNormal = gl.getAttribLocation(program, 'vNormal');
+      var vTexCoord = gl.getAttribLocation(program, 'vTexCoord');
+      gl.vertexAttribPointer(
+        vPosition,  // variabel yang memegang posisi attribute di shader
+        3,          // jumlah elemen per atribut
+        gl.FLOAT,   // tipe data atribut
+        false, 
+        11 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap vertex 
+        0                                   // offset dari posisi elemen di array
+      );
+      
+      gl.vertexAttribPointer(
+        vNormal,
+        3,
+        gl.FLOAT,
+        false,
+        11 * Float32Array.BYTES_PER_ELEMENT,
+        6 * Float32Array.BYTES_PER_ELEMENT
+      );
+      gl.vertexAttribPointer(
+        vTexCoord,
+        2,
+        gl.FLOAT,
+        false,
+        11 * Float32Array.BYTES_PER_ELEMENT,
+        9 * Float32Array.BYTES_PER_ELEMENT
+      );
+      gl.enableVertexAttribArray(vPosition);
+      gl.enableVertexAttribArray(vNormal);
+      gl.enableVertexAttribArray(vTexCoord);
+      
       // gl.drawArrays(gl.TRIANGLES, 0, 36);
       gl.drawArrays(gl.TRIANGLES, 0, 30);
+      // //////////
+  
+      //Mengecilkan huruf H
+      glMatrix.mat4.scale(mm, mm, vecScaleH);
+      gl.uniformMatrix4fv(mmLoc, false, mm);
+
+      // Rotate
+      thetahuruf += 0.0037;
+      glMatrix.mat4.rotateY(mm, mm, thetahuruf);
+      
+      //Biar H-nya jalan-jalan
+      console.log(trans.x);
+      if(trans.x + 0.5 > 0.5*3.5|| trans.x + -0.5 < -0.5*3.5)
+      {
+        xAdders *= -1;
+      }
+      trans.x += xAdders;
+      if(trans.y + 0.5 > 0.5*3.5 || trans.y + -0.5 < -0.5*3.5)
+      {
+        yAdders *= -1;
+      }
+      trans.y += yAdders;
+      if(trans.z + 0.5 > 0.5*3.5 || trans.z + -0.5 < -0.5*3.5)
+      {
+        zAdders *= -1;
+      }
+      trans.z += zAdders;
+
+      glMatrix.mat4.translate(mm, mm, [trans.x, trans.y, trans.z]);
+
+      gl.uniformMatrix4fv(mmLoc, false, mm);
+
+      genDraw(gl.TRIANGLE_FAN, triangleVertices1);
+      genDraw(gl.TRIANGLE_FAN, triangleVertices2);
+      genDraw(gl.TRIANGLE_FAN, triangleVertices3);
+  
       requestAnimationFrame(render);
     }
 
@@ -327,7 +379,7 @@
     
     // Fill the texture with a 1x1 blue pixel.
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-                  new Uint8Array([0, 0, 255, 255]));
+    new Uint8Array([0, 0, 255, 255]));
 
     gl.activeTexture(gl.TEXTURE0);
     var sampler0Loc = gl.getUniformLocation(program, 'sampler0');
